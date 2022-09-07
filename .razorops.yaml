@@ -7,6 +7,7 @@ tasks:
     - cache/pull:
         key: maven-repo-{{ checksum "pom.xml" }}
         fallback_key: maven-repo-
+        
     - run: mvn clean test
     - reports/junit: 
       - target/surefire-reports/TEST-*.xml
