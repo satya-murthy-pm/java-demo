@@ -1,13 +1,38 @@
-tasks:
-  hello-job:
-    runner: razorci/openjdk:11-buster
+# Razorops configuration file for a Java application
+
+version: 1
+
+# Define the Docker image to use
+image:
+  name: openjdk:11
+
+# Define the stages of the pipeline
+stages:
+  - build
+  - test
+  - deploy
+
+# Define the jobs for each stage
+jobs:
+  build:
     steps:
-    - git --version
-    - checkout
-    - cache/pull:
-        key: maven-repo-{{ checksum "pom.xml" }}
-        fallback_key: maven-repo-
-        
-    - run: mvn clean test
-    - reports/junit: 
-      - target/surefire-reports/TEST-*.xml
+      - checkout
+      - run:
+          name: Build the application
+          command: |
+            ./gradlew build
+
+  test:
+    steps:
+      - run:
+          name: Run unit tests
+          command: |
+            ./gradlew test
+
+  deploy:
+    steps:
+      - deploy:
+          name: Deploy to production
+          environment: production
+          command: |
+            ./gradlew deploy
